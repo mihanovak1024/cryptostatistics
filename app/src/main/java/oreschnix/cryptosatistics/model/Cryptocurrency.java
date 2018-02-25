@@ -1,6 +1,6 @@
 package oreschnix.cryptosatistics.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
@@ -31,21 +31,21 @@ public class Cryptocurrency implements Serializable {
     private String name;
     private String symbol;
     private String rank;
-    @JsonProperty("price_usd")
+    @SerializedName("price_usd")
     private String priceUsd;
-    @JsonProperty("24h_volume_usd")
+    @SerializedName("24h_volume_usd")
     private String priceBtc;
-    @JsonProperty("market_cap_usd")
+    @SerializedName("market_cap_usd")
     private String marketCapUsd;
-    @JsonProperty("available_supply")
+    @SerializedName("available_supply")
     private String availableSupply;
-    @JsonProperty("total_supply")
+    @SerializedName("total_supply")
     private String totalSupply;
-    @JsonProperty("percent_change_1h")
+    @SerializedName("percent_change_1h")
     private String percentChange1h;
-    @JsonProperty("percent_change_24h")
+    @SerializedName("percent_change_24h")
     private String percentChange24h;
-    @JsonProperty("percent_change_7d")
+    @SerializedName("percent_change_7d")
     private String percentChange7d;
 
     public String getId() {
