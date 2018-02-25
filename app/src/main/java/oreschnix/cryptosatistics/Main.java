@@ -3,28 +3,20 @@ package oreschnix.cryptosatistics;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.annotation.UiThread;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.TextView;
 
-import java.util.Map;
+import java.util.List;
 
-import oreschnix.cryptosatistics.model.Cryptocurrency;
-import oreschnix.cryptosatistics.model.GlobalMarketData;
-import oreschnix.cryptosatistics.network.Constants;
-import oreschnix.cryptosatistics.network.HttpDataProvider;
-import oreschnix.cryptosatistics.network.VolleyDataProvider;
-import oreschnix.cryptosatistics.network.interfaces.CryptocurrencyProviderListener;
-import oreschnix.cryptosatistics.network.interfaces.DataProvider;
-import oreschnix.cryptosatistics.network.interfaces.GlobalDataProviderListener;
+import oreschnix.cryptosatistics.operations.GlobalDataOperations;
+import oreschnix.cryptosatistics.operations.listeners.OperationsCallback;
 import oreschnix.cryptosatistics.util.HandlerFactory;
 
 /**
  * Created by miha.novak on 23/02/2018.
  */
 
-public class Main extends AppCompatActivity implements CryptocurrencyProviderListener, GlobalDataProviderListener {
+public class Main extends AppCompatActivity implements OperationsCallback {
 
     private TextView mCurrencyTypeTV;
     private TextView mCurrencyPriceTV;
@@ -33,6 +25,8 @@ public class Main extends AppCompatActivity implements CryptocurrencyProviderLis
 
     private Handler mUiHandler;
 
+    private GlobalDataOperations mGlobalDataOperations;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,11 +34,8 @@ public class Main extends AppCompatActivity implements CryptocurrencyProviderLis
         initViews();
         this.mUiHandler = HandlerFactory.createUiHandler();
 
-        DataProvider dataCurrencyProvider = new VolleyDataProvider(); // or HttpDataProvider();
-        dataCurrencyProvider.getCryptocurrencyInfo(this, Constants.Currency.BTC, this);
-
-        DataProvider globalMarketDataProvider = new HttpDataProvider(mUiHandler);
-        globalMarketDataProvider.getGlobalInfo(this, this);
+        mGlobalDataOperations = new GlobalDataOperations(mUiHandler, this);
+        mGlobalDataOperations.updateData(this);
     }
 
     private void initViews() {
@@ -54,26 +45,8 @@ public class Main extends AppCompatActivity implements CryptocurrencyProviderLis
         mGlobalDailyVolumeTV = (TextView) findViewById(R.id.global_daily_volume);
     }
 
-    @UiThread
     @Override
-    public void onReceive(Map<Constants.Currency, Cryptocurrency> cryptocurrencyMap) {
-        Cryptocurrency cryptocurrency = cryptocurrencyMap.get(Constants.Currency.BTC);
-        mCurrencyTypeTV.setText(cryptocurrency.getName());
-        mCurrencyPriceTV.setText(cryptocurrency.getPriceUsd());
-        Log.d("onReceive", "CryptocurrencyProviderListener - done");
-    }
-
-    @UiThread
-    @Override
-    public void onFail(String errorMessage) {
-        Log.d("onFail", "fail");
-    }
-
-    @UiThread
-    @Override
-    public void onReceive(GlobalMarketData globalMarketData) {
-        Log.d("onReceive", "GlobalDataProviderListener - done");
-        mGlobalCapTV.setText(globalMarketData.getTotalMarketCapUsd());
-        mGlobalDailyVolumeTV.setText(globalMarketData.getTotalDailyVolumeUsd());
+    public void dataUpdated() {
+        List<String> calculatedChangeOnGlobalScale = mGlobalDataOperations.calculateCurrencyChangeOnGlobalScale();
     }
 }
