@@ -61,9 +61,25 @@ public class GlobalDataOperations implements CryptocurrencyProviderListener, Glo
         mGlobalMarketDataProvider.getGlobalInfo(context, this);
     }
 
-    public ArrayList<String> calculateCurrencyChangeOnGlobalScale() {
-        // TODO: 25/02/2018 Implement this
-        return null;
+    public Map<Constants.Currency, Cryptocurrency> calculateCurrencyChangeOnGlobalScale() {
+        for (Cryptocurrency cryptocurrency : mCryptocurrencyMap.values()) {
+            double cryptocurrencyCurrentPrice = Double.parseDouble(cryptocurrency.getPriceUsd());
+            double cryptocurrencyPreviousPrice = Double.parseDouble("10"); // TODO: 25/02/2018 Implement logic for previous data
+            double cryptocurrenyChangePercentage = (cryptocurrencyCurrentPrice - cryptocurrencyPreviousPrice) / cryptocurrencyCurrentPrice;
+            cryptocurrency.setPercenteChangeVersusGlobal(cryptocurrenyChangePercentage - getMarketChangePercentage());
+        }
+        return mCryptocurrencyMap;
+    }
+
+    public double getMarketChangePercentage() {
+        double marketCurrentPrice = Double.parseDouble(mGlobalMarketData.getTotalMarketCapUsd());
+        double marketPreviousPrice = Double.parseDouble("201241796675"); // TODO: 25/02/2018 Implement logic for previous data
+        double marketPriceChangePercentage = (marketCurrentPrice - marketPreviousPrice) / marketCurrentPrice;
+        return marketPriceChangePercentage;
+    }
+
+    public double getMarketUsdValue() {
+        return Double.parseDouble(mGlobalMarketData.getTotalMarketCapUsd());
     }
 
     @UiThread

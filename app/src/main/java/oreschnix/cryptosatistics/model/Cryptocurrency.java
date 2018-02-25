@@ -48,6 +48,12 @@ public class Cryptocurrency implements Serializable {
     @SerializedName("percent_change_7d")
     private String percentChange7d;
 
+    /**
+     * Change of this cryptocurrency compared to global
+     * market data change in percentage.
+     */
+    private double percenteChangeVersusGlobal;
+
     public String getId() {
         return id;
     }
@@ -142,5 +148,13 @@ public class Cryptocurrency implements Serializable {
 
     public void setPercentChange7d(String percentChange7d) {
         this.percentChange7d = percentChange7d;
+    }
+
+    public double getPercenteChangeVersusGlobal() {
+        return percenteChangeVersusGlobal;
+    }
+
+    public void setPercenteChangeVersusGlobal(double percenteChangeVersusGlobal) {
+        this.percenteChangeVersusGlobal = percenteChangeVersusGlobal;
     }
 }
