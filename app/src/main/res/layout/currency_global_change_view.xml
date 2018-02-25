@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<oreschnix.cryptosatistics.views.CurrencyGlobalChangeView xmlns:android="http://schemas.android.com/apk/res/android"
+                                                          android:layout_width="match_parent"
+                                                          android:layout_height="wrap_content"
+                                                          android:layout_marginBottom="10dp"
+                                                          android:layout_marginTop="10dp"
+                                                          android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="10dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/currency_global_change_currency_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#333333"
+                android:textSize="18sp"/>
+
+            <TextView
+                android:id="@+id/currency_global_change_currency_id"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#aa555555"
+                android:textSize="16sp"/>
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/currency_global_change_percent_change"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="right"
+                android:padding="5dp"
+                android:layout_margin="5dp"
+                android:shadowColor="#444"
+                android:shadowRadius="2"
+                android:textColor="@color/change_percentage_text_color"
+                android:textSize="16sp"/>
+
+        </FrameLayout>
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#33333333"/>
+
+</oreschnix.cryptosatistics.views.CurrencyGlobalChangeView>

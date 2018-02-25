@@ -3,4 +3,9 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
+
+    <color name="positive_percentage_change">#8800aa00</color>
+    <color name="negative_percentage_change">#88cc0000</color>
+    <color name="change_percentage_text_color">#dddddd</color>
 </resources>

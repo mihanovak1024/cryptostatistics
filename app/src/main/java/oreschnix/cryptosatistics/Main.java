@@ -4,13 +4,17 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.util.List;
+import java.util.Map;
 
+import oreschnix.cryptosatistics.model.Cryptocurrency;
+import oreschnix.cryptosatistics.network.Constants;
 import oreschnix.cryptosatistics.operations.GlobalDataOperations;
 import oreschnix.cryptosatistics.operations.listeners.OperationsCallback;
 import oreschnix.cryptosatistics.util.HandlerFactory;
+import oreschnix.cryptosatistics.views.CurrencyGlobalChangeView;
 
 /**
  * Created by miha.novak on 23/02/2018.
@@ -18,10 +22,9 @@ import oreschnix.cryptosatistics.util.HandlerFactory;
 
 public class Main extends AppCompatActivity implements OperationsCallback {
 
-    private TextView mCurrencyTypeTV;
-    private TextView mCurrencyPriceTV;
-    private TextView mGlobalCapTV;
-    private TextView mGlobalDailyVolumeTV;
+    private TextView mGlobalMarketChangePercentageTV;
+    private TextView mGlobalMarketUsdTV;
+    private LinearLayout mCryptocurrencyContainerLL;
 
     private Handler mUiHandler;
 
@@ -39,14 +42,27 @@ public class Main extends AppCompatActivity implements OperationsCallback {
     }
 
     private void initViews() {
-        mCurrencyPriceTV = (TextView) findViewById(R.id.currency_price);
-        mCurrencyTypeTV = (TextView) findViewById(R.id.currency_type);
-        mGlobalCapTV = (TextView) findViewById(R.id.global_total_cap);
-        mGlobalDailyVolumeTV = (TextView) findViewById(R.id.global_daily_volume);
+        mGlobalMarketChangePercentageTV = (TextView) findViewById(R.id.market_change_percentage);
+        mCryptocurrencyContainerLL = (LinearLayout) findViewById(R.id.cryptocurrency_change_container);
+        mGlobalMarketUsdTV = (TextView) findViewById(R.id.market_usd_value);
     }
 
     @Override
     public void dataUpdated() {
-        List<String> calculatedChangeOnGlobalScale = mGlobalDataOperations.calculateCurrencyChangeOnGlobalScale();
+        mUiHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                double marketChangePercentage = mGlobalDataOperations.getMarketChangePercentage();
+                mGlobalMarketChangePercentageTV.setText((marketChangePercentage >= 0 ? "+ " : "- ") + String.format("%.2f", marketChangePercentage) + "");
+                mGlobalMarketChangePercentageTV.setBackgroundColor(getResources().getColor(
+                        marketChangePercentage >= 0 ? R.color.positive_percentage_change : R.color.negative_percentage_change));
+                mGlobalMarketUsdTV.setText(mGlobalDataOperations.getMarketUsdValue() + "");
+                Map<Constants.Currency, Cryptocurrency> calculatedChangeOnGlobalScale = mGlobalDataOperations.calculateCurrencyChangeOnGlobalScale();
+                for (Cryptocurrency cryptocurrency : calculatedChangeOnGlobalScale.values()) {
+                    CurrencyGlobalChangeView currencyGlobalChangeView = new CurrencyGlobalChangeView(Main.this, cryptocurrency);
+                    mCryptocurrencyContainerLL.addView(currencyGlobalChangeView);
+                }
+            }
+        });
     }
 }

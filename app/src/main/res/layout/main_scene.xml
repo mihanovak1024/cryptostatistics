@@ -1,73 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:background="@android:color/holo_blue_light"
-        android:orientation="vertical">
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="20dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/market_change_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:layout_weight="2"
+            android:padding="5dp"
+            android:layout_gravity="center_vertical"
+            android:text="Global Market data"
+            android:textColor="#444"
+            android:textSize="20dp"
+            android:textStyle="bold"/>
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@android:color/holo_blue_light"
-            android:orientation="horizontal"
-            android:layout_marginBottom="20dp">
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/currency_type"
-                android:layout_width="wrap_content"
+                android:id="@+id/market_usd_value"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="2dp"
-                android:background="@android:color/holo_green_light"
+                android:background="@android:color/white"
                 android:padding="5dp"
-                android:textColor="#fff"
-                android:textStyle="bold"
-                />
+                android:shadowColor="#888"
+                android:textColor="#444"
+                android:textSize="18dp"/>
 
             <TextView
-                android:id="@+id/currency_price"
-                android:layout_width="wrap_content"
+                android:id="@+id/market_change_percentage"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="2dp"
-                android:background="@android:color/holo_green_light"
                 android:padding="5dp"
-                android:textColor="#fff"
-                android:textStyle="bold"
-                />
+                android:shadowColor="#444"
+                android:textColor="@color/change_percentage_text_color"
+                android:textSize="18dp"/>
+
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@android:color/holo_blue_light"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/global_total_cap"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="2dp"
-                android:background="@android:color/holo_green_light"
-                android:padding="5dp"
-                android:textColor="#fff"
-                android:textStyle="bold"
-                />
-
-            <TextView
-                android:id="@+id/global_daily_volume"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="2dp"
-                android:background="@android:color/holo_green_light"
-                android:padding="5dp"
-                android:textColor="#fff"
-                android:textStyle="bold"
-                />
-        </LinearLayout>
     </LinearLayout>
-</RelativeLayout>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@android:color/holo_blue_light"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/cryptocurrency_change_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"/>
+
+    </ScrollView>
+
+</LinearLayout>
