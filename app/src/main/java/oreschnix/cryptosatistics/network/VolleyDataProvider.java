@@ -24,7 +24,8 @@ import oreschnix.cryptosatistics.network.interfaces.GlobalDataProviderListener;
 /**
  * Created by miha.novak on 23/02/2018.
  */
-
+// TODO: 25/02/2018 Create logic for a Singleton VolleyDataProvider throughout the whole app
+// TODO: 25/02/2018 Refactor for object-prone data provider, instead of Cryptocurrency and GlobalData specific methods
 public class VolleyDataProvider extends BaseDataProvider implements Response.Listener<String>, Response.ErrorListener {
 
     private Map<Constants.Currency, Cryptocurrency> responseMap;

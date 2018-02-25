@@ -25,7 +25,8 @@ import oreschnix.cryptosatistics.util.HandlerFactory;
 /**
  * Created by miha.novak on 23/02/2018.
  */
-
+// TODO: 25/02/2018 Create logic for a Singleton HttpDataProvider throughout the whole app
+// TODO: 25/02/2018 Refactor for object-prone data provider, instead of Cryptocurrency and GlobalData specific methods
 public class HttpDataProvider extends BaseDataProvider {
 
     private Map<Constants.Currency, Cryptocurrency> mResponseMap;
