@@ -17,7 +17,9 @@ import java.util.List;
 import java.util.Map;
 
 import oreschnix.cryptosatistics.model.Cryptocurrency;
-import oreschnix.cryptosatistics.network.interfaces.DataProviderListener;
+import oreschnix.cryptosatistics.model.GlobalMarketData;
+import oreschnix.cryptosatistics.network.interfaces.CryptocurrencyProviderListener;
+import oreschnix.cryptosatistics.network.interfaces.GlobalDataProviderListener;
 
 /**
  * Created by miha.novak on 23/02/2018.
@@ -26,7 +28,7 @@ import oreschnix.cryptosatistics.network.interfaces.DataProviderListener;
 public class VolleyDataProvider extends BaseDataProvider implements Response.Listener<String>, Response.ErrorListener {
 
     private Map<Constants.Currency, Cryptocurrency> responseMap;
-    private DataProviderListener dataProviderListener;
+    private CryptocurrencyProviderListener cryptocurrencyProviderListener;
     private int requestNumber = 0;
 
     public VolleyDataProvider() {
@@ -36,17 +38,17 @@ public class VolleyDataProvider extends BaseDataProvider implements Response.Lis
      * Loops through cryptocurrency id list and
      * makes requests with {@link RequestQueue}.
      *
-     * @param context              - application context
-     * @param cryptocurrencyIds    - list of ids, for desired cryptocurrency data to be fetched
-     * @param dataProviderListener - listener for the responseMap callback
+     * @param context                        - application context
+     * @param cryptocurrencyIds              - list of ids, for desired cryptocurrency data to be fetched
+     * @param cryptocurrencyProviderListener - listener for the responseMap callback
      */
     @Override
     void executeRequest(Context context,
                         List<Constants.Currency> cryptocurrencyIds,
-                        DataProviderListener dataProviderListener) {
+                        CryptocurrencyProviderListener cryptocurrencyProviderListener) {
         // Setup
-        this.dataProviderListener = dataProviderListener;
-        String baseUrl = Constants.BASE_URL;
+        this.cryptocurrencyProviderListener = cryptocurrencyProviderListener;
+        String baseUrl = Constants.BASE_CRYPTO_URL;
         RequestQueue requestQueue = Volley.newRequestQueue(context);
         responseMap = new HashMap<>();
 
@@ -61,7 +63,7 @@ public class VolleyDataProvider extends BaseDataProvider implements Response.Lis
 
     /**
      * Volley's error callback.
-     * The onFail() call is sent via the {@link DataProviderListener}.
+     * The onFail() call is sent via the {@link CryptocurrencyProviderListener}.
      *
      * @param error
      */
@@ -69,8 +71,8 @@ public class VolleyDataProvider extends BaseDataProvider implements Response.Lis
     public void onErrorResponse(VolleyError error) {
         error.printStackTrace();
         Log.d("onErrorResponse", "error");
-        if (dataProviderListener != null) {
-            dataProviderListener.onFail("onErrorResponse");
+        if (cryptocurrencyProviderListener != null) {
+            cryptocurrencyProviderListener.onFail("onErrorResponse");
         }
     }
 
@@ -79,7 +81,7 @@ public class VolleyDataProvider extends BaseDataProvider implements Response.Lis
      * The response is transformed into a {@link Cryptocurrency} object
      * and added into {@link HashMap}.
      * When the requestNumber reaches 0, we reached the final response,
-     * thus send the onReceive(responseMap) call via the {@link DataProviderListener}.
+     * thus send the onReceive(responseMap) call via the {@link CryptocurrencyProviderListener}.
      *
      * @param response
      */
@@ -96,11 +98,49 @@ public class VolleyDataProvider extends BaseDataProvider implements Response.Lis
         responseMap.put(currency, cryptocurrency);
         if (requestNumber == 0) {
             Log.d("onResponse", "fetching done, callback");
-            if (dataProviderListener != null) {
-                dataProviderListener.onReceive(responseMap);
+            if (cryptocurrencyProviderListener != null) {
+                cryptocurrencyProviderListener.onReceive(responseMap);
             } else {
                 Log.d("onResponse", "listenerNull");
             }
         }
+    }
+
+    /**
+     * Requests global market data from the server
+     * and returns the fail or success callback via {@link GlobalDataProviderListener}.
+     *
+     * @param context
+     * @param globalDataProviderListener
+     */
+    @Override
+    public void getGlobalInfo(Context context, final GlobalDataProviderListener globalDataProviderListener) {
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+        StringRequest stringRequest = new StringRequest(Constants.MARKET_DATA_URL, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Gson gson = new Gson();
+                GlobalMarketData globalMarketData = gson.fromJson(response, new TypeToken<GlobalMarketData>() {
+                }.getType());
+                Log.d("onResponse", "fetching done, callback");
+                if (globalDataProviderListener != null) {
+                    globalDataProviderListener.onReceive(globalMarketData);
+                } else {
+                    Log.d("onResponse", "listenerNull");
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+                Log.d("onErrorResponse", "error");
+                if (globalDataProviderListener != null) {
+                    globalDataProviderListener.onFail("onErrorResponse");
+                } else {
+                    Log.d("onErrorResponse", "listenerNull");
+                }
+            }
+        });
+        requestQueue.add(stringRequest);
     }
 }

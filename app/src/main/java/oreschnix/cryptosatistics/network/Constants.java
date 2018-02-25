@@ -6,7 +6,8 @@ package oreschnix.cryptosatistics.network;
 
 public class Constants {
 
-    public static final String BASE_URL = "https://api.coinmarketcap.com/v1/ticker/";
+    public static final String BASE_CRYPTO_URL = "https://api.coinmarketcap.com/v1/ticker/";
+    public static final String MARKET_DATA_URL = "https://api.coinmarketcap.com/v1/global/";
 
     public enum Currency {
         BTC("bitcoin"),

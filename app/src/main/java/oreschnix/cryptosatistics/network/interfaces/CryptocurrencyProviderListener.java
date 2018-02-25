@@ -9,7 +9,7 @@ import oreschnix.cryptosatistics.network.Constants;
  * Created by miha.novak on 24/02/2018.
  */
 
-public interface DataProviderListener {
+public interface CryptocurrencyProviderListener extends BaseNetworkListener {
 
     /**
      * Data is received success callback.
@@ -17,12 +17,5 @@ public interface DataProviderListener {
      * @param cryptocurrencyMap - list of the cryptocurrency data specified in request
      */
     void onReceive(Map<Constants.Currency, Cryptocurrency> cryptocurrencyMap);
-
-    /**
-     * Data receive fail callback.
-     *
-     * @param errorMessage - short description of error
-     */
-    void onFail(String errorMessage);
 
 }

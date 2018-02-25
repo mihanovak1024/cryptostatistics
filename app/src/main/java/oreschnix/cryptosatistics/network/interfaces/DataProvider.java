@@ -19,23 +19,30 @@ public interface DataProvider {
      * Executes the request for a single cryptocurrency data
      *
      * @param context
-     * @param cryptocurrencyID     - "BTC", "ETH",...
-     * @param dataProviderListener - listener for data received callback
+     * @param cryptocurrencyID               - "BTC", "ETH",...
+     * @param cryptocurrencyProviderListener - listener for data received callback
      */
     void getCryptocurrencyInfo(Context context,
                                Constants.Currency cryptocurrencyID,
-                               DataProviderListener dataProviderListener);
+                               CryptocurrencyProviderListener cryptocurrencyProviderListener);
 
     /**
      * Executes the request for the list of cryptocurrency data
      * for specific cryptocurrencies
      *
      * @param context
-     * @param cryptocurrencyIDs    - "BTC", "ETH",...
-     * @param dataProviderListener - listener for data received callback
+     * @param cryptocurrencyIDs              - "BTC", "ETH",...
+     * @param cryptocurrencyProviderListener - listener for data received callback
      */
     void getCryptocurrencyInfoList(Context context,
                                    List<Constants.Currency> cryptocurrencyIDs,
-                                   DataProviderListener dataProviderListener);
+                                   CryptocurrencyProviderListener cryptocurrencyProviderListener);
+
+    /**
+     * Executes the request for global cryptocurrency market data.
+     *
+     * @param context
+     */
+    void getGlobalInfo(Context context, GlobalDataProviderListener globalDataProviderListener);
 
 }
