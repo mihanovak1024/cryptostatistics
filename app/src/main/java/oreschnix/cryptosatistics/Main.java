@@ -10,7 +10,12 @@ import android.widget.TextView;
 import java.util.Map;
 
 import oreschnix.cryptosatistics.model.Cryptocurrency;
+import oreschnix.cryptosatistics.model.GlobalMarketData;
 import oreschnix.cryptosatistics.network.Constants;
+import oreschnix.cryptosatistics.network.HttpDataProvider;
+import oreschnix.cryptosatistics.network.VolleyDataProvider;
+import oreschnix.cryptosatistics.network.interfaces.DataProvider;
+import oreschnix.cryptosatistics.operations.DataCalculationLogic;
 import oreschnix.cryptosatistics.operations.GlobalDataOperations;
 import oreschnix.cryptosatistics.operations.listeners.OperationsCallback;
 import oreschnix.cryptosatistics.util.HandlerFactory;
@@ -37,7 +42,10 @@ public class Main extends AppCompatActivity implements OperationsCallback {
         initViews();
         this.mUiHandler = HandlerFactory.createUiHandler();
 
-        mGlobalDataOperations = new GlobalDataOperations(mUiHandler, this);
+        DataProvider dataCurrencyProvider = new VolleyDataProvider(); // or HttpDataProvider(uiHandler);
+        DataProvider globalMarketDataProvider = new HttpDataProvider(mUiHandler); // or VolleyDataProvider();
+
+        mGlobalDataOperations = new GlobalDataOperations(this, globalMarketDataProvider, dataCurrencyProvider);
         mGlobalDataOperations.updateData(this);
     }
 
@@ -48,16 +56,17 @@ public class Main extends AppCompatActivity implements OperationsCallback {
     }
 
     @Override
-    public void dataUpdated() {
+    public void dataUpdated(final Map<Constants.Currency, Cryptocurrency> cryptocurrencyMap,
+                            final GlobalMarketData globalMarketData) {
         mUiHandler.post(new Runnable() {
             @Override
             public void run() {
-                double marketChangePercentage = mGlobalDataOperations.getMarketChangePercentage();
+                double marketChangePercentage = DataCalculationLogic.getMarketChangePercentage(globalMarketData);
                 mGlobalMarketChangePercentageTV.setText((marketChangePercentage >= 0 ? "+ " : "- ") + String.format("%.2f", marketChangePercentage) + "");
                 mGlobalMarketChangePercentageTV.setBackgroundColor(getResources().getColor(
                         marketChangePercentage >= 0 ? R.color.positive_percentage_change : R.color.negative_percentage_change));
-                mGlobalMarketUsdTV.setText(mGlobalDataOperations.getMarketUsdValue() + "");
-                Map<Constants.Currency, Cryptocurrency> calculatedChangeOnGlobalScale = mGlobalDataOperations.calculateCurrencyChangeOnGlobalScale();
+                mGlobalMarketUsdTV.setText(DataCalculationLogic.getMarketUsdValue(globalMarketData) + "");
+                Map<Constants.Currency, Cryptocurrency> calculatedChangeOnGlobalScale = DataCalculationLogic.calculateCurrencyChangeOnGlobalScale(cryptocurrencyMap, globalMarketData);
                 for (Cryptocurrency cryptocurrency : calculatedChangeOnGlobalScale.values()) {
                     CurrencyGlobalChangeView currencyGlobalChangeView = new CurrencyGlobalChangeView(Main.this, cryptocurrency);
                     mCryptocurrencyContainerLL.addView(currencyGlobalChangeView);

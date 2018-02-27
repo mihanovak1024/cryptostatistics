@@ -12,8 +12,6 @@ import java.util.Map;
 import oreschnix.cryptosatistics.model.Cryptocurrency;
 import oreschnix.cryptosatistics.model.GlobalMarketData;
 import oreschnix.cryptosatistics.network.Constants;
-import oreschnix.cryptosatistics.network.HttpDataProvider;
-import oreschnix.cryptosatistics.network.VolleyDataProvider;
 import oreschnix.cryptosatistics.network.interfaces.CryptocurrencyProviderListener;
 import oreschnix.cryptosatistics.network.interfaces.DataProvider;
 import oreschnix.cryptosatistics.network.interfaces.GlobalDataProviderListener;
@@ -38,11 +36,10 @@ public class GlobalDataOperations implements CryptocurrencyProviderListener, Glo
     private GlobalMarketData mGlobalMarketData;
     private PairCheck dataUpdatedCheck;
 
-    public GlobalDataOperations(Handler uiHandler, OperationsCallback operationsCallback) {
+    public GlobalDataOperations(OperationsCallback operationsCallback, DataProvider globalMarketDataProvider, DataProvider dataCurrencyProvider) {
         this.mOperationsCallback = operationsCallback;
-
-        mDataCurrencyProvider = new VolleyDataProvider(); // or HttpDataProvider(uiHandler);
-        mGlobalMarketDataProvider = new HttpDataProvider(uiHandler); // or VolleyDataProvider();
+        this.mGlobalMarketDataProvider = globalMarketDataProvider;
+        this.mDataCurrencyProvider = dataCurrencyProvider;
     }
 
     /**
@@ -61,34 +58,13 @@ public class GlobalDataOperations implements CryptocurrencyProviderListener, Glo
         mGlobalMarketDataProvider.getGlobalInfo(context, this);
     }
 
-    public Map<Constants.Currency, Cryptocurrency> calculateCurrencyChangeOnGlobalScale() {
-        for (Cryptocurrency cryptocurrency : mCryptocurrencyMap.values()) {
-            double cryptocurrencyCurrentPrice = Double.parseDouble(cryptocurrency.getPriceUsd());
-            double cryptocurrencyPreviousPrice = Double.parseDouble("10"); // TODO: 25/02/2018 Implement logic for previous data
-            double cryptocurrenyChangePercentage = (cryptocurrencyCurrentPrice - cryptocurrencyPreviousPrice) / cryptocurrencyCurrentPrice;
-            cryptocurrency.setPercenteChangeVersusGlobal(cryptocurrenyChangePercentage - getMarketChangePercentage());
-        }
-        return mCryptocurrencyMap;
-    }
-
-    public double getMarketChangePercentage() {
-        double marketCurrentPrice = Double.parseDouble(mGlobalMarketData.getTotalMarketCapUsd());
-        double marketPreviousPrice = Double.parseDouble("201241796675"); // TODO: 25/02/2018 Implement logic for previous data
-        double marketPriceChangePercentage = (marketCurrentPrice - marketPreviousPrice) / marketCurrentPrice;
-        return marketPriceChangePercentage;
-    }
-
-    public double getMarketUsdValue() {
-        return Double.parseDouble(mGlobalMarketData.getTotalMarketCapUsd());
-    }
-
     @UiThread
     @Override
     public void onReceive(Map<Constants.Currency, Cryptocurrency> cryptocurrencyMap) {
         Log.d("onReceive", "CryptocurrencyProviderListener - done");
         this.mCryptocurrencyMap = cryptocurrencyMap;
         if (dataUpdatedCheck.setFirstAndCheck(true)) {
-            mOperationsCallback.dataUpdated();
+            mOperationsCallback.dataUpdated(cryptocurrencyMap, mGlobalMarketData);
         }
     }
 
@@ -104,7 +80,7 @@ public class GlobalDataOperations implements CryptocurrencyProviderListener, Glo
         Log.d("onReceive", "GlobalDataProviderListener - done");
         this.mGlobalMarketData = globalMarketData;
         if (dataUpdatedCheck.setSecondAndCheck(true)) {
-            mOperationsCallback.dataUpdated();
+            mOperationsCallback.dataUpdated(mCryptocurrencyMap, globalMarketData);
         }
     }
 }

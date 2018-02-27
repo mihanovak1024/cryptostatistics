@@ -46,7 +46,7 @@ public class CurrencyGlobalChangeView extends LinearLayout {
         alreadyInitialized = true;
         mCryptocurrencyNameTV.setText(cryptocurrency.getName());
         mCryptocurrencyIdTV.setText(cryptocurrency.getSymbol());
-        double percentageChange = cryptocurrency.getPercenteChangeVersusGlobal();
+        double percentageChange = cryptocurrency.getPercentChangeVersusGlobal();
         mCryptocurrencyChangeTV.setText((percentageChange >= 0 ? "+ " : "- ") + String.format("%.2f", percentageChange) + "");
         mCryptocurrencyChangeTV.setBackgroundColor(getResources().getColor(percentageChange >= 0 ? R.color.positive_percentage_change : R.color.negative_percentage_change));
     }
