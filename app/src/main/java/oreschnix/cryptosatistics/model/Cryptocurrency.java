@@ -52,7 +52,7 @@ public class Cryptocurrency implements Serializable {
      * Change of this cryptocurrency compared to global
      * market data change in percentage.
      */
-    private double percenteChangeVersusGlobal;
+    private double percentChangeVersusGlobal;
 
     public String getId() {
         return id;
@@ -150,11 +150,11 @@ public class Cryptocurrency implements Serializable {
         this.percentChange7d = percentChange7d;
     }
 
-    public double getPercenteChangeVersusGlobal() {
-        return percenteChangeVersusGlobal;
+    public double getPercentChangeVersusGlobal() {
+        return percentChangeVersusGlobal;
     }
 
-    public void setPercenteChangeVersusGlobal(double percenteChangeVersusGlobal) {
-        this.percenteChangeVersusGlobal = percenteChangeVersusGlobal;
+    public void setPercentChangeVersusGlobal(double percentChangeVersusGlobal) {
+        this.percentChangeVersusGlobal = percentChangeVersusGlobal;
     }
 }
